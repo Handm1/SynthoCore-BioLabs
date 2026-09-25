@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SynthoCore BioLabs — Peptide Catalogue</title>
+<meta name="description" content="SynthoCore BioLabs — research-grade synthetic peptide catalogue. Specify purity, batch, and quantity.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#14181c;
+    --ink-soft:#4a545c;
+    --paper:#f4f6f7;
+    --panel:#ffffff;
+    --line:#d7dde1;
+    --blue:#1b5c8a;
+    --blue-deep:#0e3c58;
+    --mint:#3f8f66;
+    --amber:#b8742f;
+    --mono: 'IBM Plex Mono', ui-monospace, monospace;
+    --sans: 'IBM Plex Sans', system-ui, sans-serif;
+    --display: 'Space Grotesk', var(--sans);
+    --maxw: 1180px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:var(--sans);
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:inherit;}
+  img,svg{max-width:100%;}
+  :focus-visible{outline:2px solid var(--blue); outline-offset:2px;}
+
+  .wrap{max-width:var(--maxw); margin:0 auto; padding:0 28px;}
+
+  /* ---------- header ---------- */
+  header.site{
+    border-bottom:1px solid var(--line);
+    background:var(--paper);
+    position:sticky; top:0; z-index:30;
+  }
+  .site-bar{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:18px 0;
+  }
+  .brand{display:flex; align-items:center; gap:12px; text-decoration:none;}
+  .brand-mark{
+    width:34px; height:34px; flex:0 0 auto;
+  }
+  .brand-name{
+    font-family:var(--display); font-weight:700; font-size:18px; letter-spacing:0.01em;
+    color:var(--ink);
+  }
+  .brand-sub{
+    font-family:var(--mono); font-size:11px; color:var(--ink-soft); margin-top:1px;
+  }
+  nav.site-nav{display:flex; gap:26px; font-size:14px;}
+  nav.site-nav a{text-decoration:none; color:var(--ink-soft); border-bottom:1px solid transparent; padding-bottom:2px;}
+  nav.site-nav a:hover{color:var(--ink); border-color:var(--ink);}
+
+  /* ---------- hero ---------- */
+  .hero{
+    border-bottom:1px solid var(--line);
+    background:
+      linear-gradient(180deg, rgba(27,92,138,0.04), rgba(27,92,138,0) 60%),
+      var(--paper);
+    overflow:hidden;
+  }
+  .hero-grid{
+    display:grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap:48px;
+    padding:64px 0 56px;
+    align-items:center;
+  }
+  .hero-eyebrow{
+    font-family:var(--mono); font-size:12.5px; color:var(--blue-deep);
+    display:flex; align-items:center; gap:10px; margin-bottom:18px;
+  }
+  .hero-eyebrow .dot{width:7px;height:7px;border-radius:50%;background:var(--mint); box-shadow:0 0 0 3px rgba(63,143,102,0.18);}
+  h1.hero-title{
+    font-family:var(--display);
+    font-weight:700;
+    font-size:clamp(32px, 4.4vw, 52px);
+    line-height:1.06;
+    margin:0 0 20px;
+    letter-spacing:-0.01em;
+    max-width:14ch;
+  }
+  .hero-lede{
+    font-size:16.5px; color:var(--ink-soft); max-width:46ch; margin:0 0 30px;
+  }
+  .hero-actions{display:flex; gap:14px; flex-wrap:wrap; margin-bottom:34px;}
+  .btn{
+    font-family:var(--sans); font-size:14.5px; font-weight:500;
+    padding:12px 20px; border-radius:2px; cursor:pointer;
+    border:1px solid var(--ink); background:var(--ink); color:var(--paper);
+    text-decoration:none; display:inline-flex; align-items:center; gap:8px;
+    transition: background .15s ease, color .15s ease, border-color .15s ease;
+  }
+  .btn:hover{background:var(--blue-deep); border-color:var(--blue-deep);}
+  .btn.ghost{
+    background:transparent; color:var(--ink); border:1px solid var(--line);
+  }
+  .btn.ghost:hover{border-color:var(--ink);}
+
+  .hero-stats{
+    display:flex; gap:34px; padding-top:26px; border-top:1px solid var(--line);
+    max-width:520px;
+  }
+  .hero-stats div{display:flex; flex-direction:column; gap:4px;}
+  .hero-stats .num{font-family:var(--mono); font-size:20px; color:var(--ink);}
+  .hero-stats .lbl{font-size:12.5px; color:var(--ink-soft);}
+
+  .hero-art{
+    aspect-ratio: 1 / 1;
+    max-width:420px;
+    justify-self:end;
+  }
+
+  /* ---------- notice bar ---------- */
+  .notice{
+    background:var(--blue-deep); color:#e9eef2;
+    font-family:var(--mono); font-size:12.5px;
+    padding:10px 0;
+  }
+  .notice .wrap{display:flex; gap:10px; align-items:baseline;}
+
+  /* ---------- section shell ---------- */
+  section{padding:60px 0;}
+  section + section{border-top:1px solid var(--line);}
+  .section-head{
+    display:flex; justify-content:space-between; align-items:flex-end; gap:24px;
+    margin-bottom:32px; flex-wrap:wrap;
+  }
+  h2.section-title{
+    font-family:var(--display); font-weight:600; font-size:26px; margin:0;
+    letter-spacing:-0.01em;
+  }
+  .section-note{font-size:14px; color:var(--ink-soft); max-width:46ch;}
+
+  /* ---------- catalogue controls ---------- */
+  .cat-controls{
+    display:flex; gap:10px; flex-wrap:wrap; margin-bottom:28px;
+  }
+  .chip{
+    font-family:var(--mono); font-size:12.5px;
+    padding:8px 14px; border:1px solid var(--line); background:var(--panel);
+    cursor:pointer; color:var(--ink-soft); border-radius:2px;
+  }
+  .chip[aria-pressed="true"]{
+    border-color:var(--ink); color:var(--ink); background:#eef1f2;
+  }
+  .search-box{
+    margin-left:auto;
+    display:flex; align-items:center; gap:8px;
+    border:1px solid var(--line); background:var(--panel);
+    padding:8px 12px; border-radius:2px; min-width:220px;
+  }
+  .search-box input{
+    border:none; outline:none; font-family:var(--mono); font-size:12.5px;
+    width:100%; background:transparent; color:var(--ink);
+  }
+  .search-box svg{flex:0 0 auto; opacity:0.55;}
+
+  /* ---------- catalogue table ---------- */
+  .order-banner{
+    font-family:var(--mono); font-size:13px; color:var(--blue-deep);
+    background:#eaf1f5; border:1px solid var(--line);
+    padding:12px 16px; margin:0 0 22px; border-radius:2px;
+  }
+  .cat-list{border-top:1px solid var(--line);}
+  .cat-row{
+    display:grid;
+    grid-template-columns: 2.3fr 1.1fr 1fr 1fr;
+    gap:18px;
+    align-items:center;
+    padding:18px 4px;
+    border-bottom:1px solid var(--line);
+  }
+  .cat-row.head{
+    font-family:var(--mono); font-size:11px; color:var(--ink-soft);
+    letter-spacing:0.02em; padding-top:10px; padding-bottom:10px;
+  }
+  .cat-row.head span{ text-transform:none; }
+  .prod-name-cell{display:flex; flex-direction:column; gap:3px;}
+  .prod-name{font-family:var(--display); font-weight:600; font-size:16px;}
+  .prod-alt{font-family:var(--mono); font-size:11.5px; color:var(--ink-soft);}
+  .cat-row .mono{font-family:var(--mono); font-size:13px; color:var(--ink-soft);}
+  .purity{
+    font-family:var(--mono); font-size:13px; color:var(--mint);
+  }
+  .row-action{
+    justify-self:end;
+    font-family:var(--sans); font-size:13px; font-weight:500;
+    padding:8px 14px; border:1px solid var(--ink); background:transparent;
+    cursor:pointer; border-radius:2px; color:var(--ink);
+  }
+  .row-action:hover{background:var(--ink); color:var(--paper);}
+  .empty-state{
+    padding:40px 4px; font-family:var(--mono); font-size:13px; color:var(--ink-soft);
+    display:none;
+  }
+
+  /* ---------- specs strip ---------- */
+  .specs-grid{
+    display:grid; grid-template-columns:repeat(3, 1fr); gap:1px;
+    background:var(--line); border:1px solid var(--line);
+  }
+  .spec-card{background:var(--panel); padding:26px 24px;}
+  .spec-card h3{
+    font-family:var(--display); font-size:16px; margin:0 0 10px; font-weight:600;
+  }
+  .spec-card p{margin:0; font-size:14px; color:var(--ink-soft);}
+  .spec-card .k{font-family:var(--mono); font-size:11px; color:var(--blue); margin-bottom:10px; display:block;}
+
+  /* ---------- process ---------- */
+  .process{
+    display:grid; grid-template-columns:repeat(4,1fr); gap:24px;
+  }
+  .proc-step{border-top:2px solid var(--ink); padding-top:16px;}
+  .proc-step .idx{font-family:var(--mono); font-size:12px; color:var(--blue); margin-bottom:10px; display:block;}
+  .proc-step h4{font-family:var(--display); font-size:15.5px; margin:0 0 8px;}
+  .proc-step p{margin:0; font-size:13.5px; color:var(--ink-soft);}
+
+  /* ---------- CoA / quality ---------- */
+  .quality{
+    display:grid; grid-template-columns:1fr 1fr; gap:48px; align-items:center;
+  }
+  .quality ul{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:14px;}
+  .quality li{
+    display:flex; gap:12px; font-size:14.5px; color:var(--ink-soft);
+    padding-bottom:14px; border-bottom:1px solid var(--line);
+  }
+  .quality li:last-child{border-bottom:none; padding-bottom:0;}
+  .quality li strong{color:var(--ink); font-weight:600;}
+  .quality-panel{
+    background:var(--panel); border:1px solid var(--line); padding:26px;
+    font-family:var(--mono); font-size:12.5px; color:var(--ink-soft);
+  }
+  .quality-panel .row{display:flex; justify-content:space-between; padding:9px 0; border-bottom:1px dashed var(--line);}
+  .quality-panel .row:last-child{border-bottom:none;}
+  .quality-panel .row b{color:var(--ink); font-weight:500;}
+
+  /* ---------- contact ---------- */
+  .contact-grid{display:grid; grid-template-columns:1fr 1fr; gap:48px;}
+  .contact-info h3{font-family:var(--display); font-size:20px; margin:0 0 14px;}
+  .contact-info p{color:var(--ink-soft); font-size:14.5px; margin:0 0 22px; max-width:42ch;}
+  .contact-detail{font-family:var(--mono); font-size:13px; margin-bottom:8px;}
+  form.inquiry{display:flex; flex-direction:column; gap:14px;}
+  form.inquiry label{font-family:var(--mono); font-size:11.5px; color:var(--ink-soft);}
+  form.inquiry input, form.inquiry select, form.inquiry textarea{
+    font-family:var(--sans); font-size:14px; padding:11px 12px;
+    border:1px solid var(--line); background:var(--panel); color:var(--ink);
+    border-radius:2px; width:100%;
+  }
+  form.inquiry textarea{resize:vertical; min-height:90px;}
+  .field{display:flex; flex-direction:column; gap:6px;}
+  .field-row{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+
+  /* ---------- footer ---------- */
+  footer.site{
+    border-top:1px solid var(--line);
+    padding:34px 0;
+  }
+  .foot-grid{display:flex; justify-content:space-between; align-items:flex-start; gap:20px; flex-wrap:wrap;}
+  .foot-legal{font-family:var(--mono); font-size:11.5px; color:var(--ink-soft); max-width:56ch; line-height:1.6;}
+  .foot-links{display:flex; gap:20px; font-size:13px;}
+  .foot-links a{text-decoration:none; color:var(--ink-soft);}
+  .foot-links a:hover{color:var(--ink);}
+
+  /* ---------- responsive ---------- */
+  @media (max-width:920px){
+    .hero-grid{grid-template-columns:1fr; padding-top:44px;}
+    .hero-art{justify-self:start; max-width:280px;}
+    .specs-grid{grid-template-columns:1fr;}
+    .process{grid-template-columns:1fr 1fr;}
+    .quality{grid-template-columns:1fr;}
+    .contact-grid{grid-template-columns:1fr;}
+    .cat-row{grid-template-columns:1.6fr 1fr 1fr; row-gap:8px;}
+    .cat-row.head{display:none;}
+    .cat-row .purity::before{content:"Purity ";}
+    .cat-row .mono.mw::before{content:"MW ";}
+    .row-action{grid-column:1 / -1; justify-self:stretch; text-align:center;}
+    nav.site-nav{display:none;}
+  }
+  @media (max-width:560px){
+    .process{grid-template-columns:1fr;}
+    .field-row{grid-template-columns:1fr;}
+    .hero-stats{flex-wrap:wrap; row-gap:16px;}
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    *{transition:none !important;}
+  }
+</style>
+</head>
+<body>
+
+<div class="notice">
+  <div class="wrap">
+    <span>&#9888;</span>
+    <span>Research use only — not for human or veterinary use, diagnostic use, or in vitro diagnostic use.</span>
+  </div>
+</div>
+
+<header class="site">
+  <div class="wrap site-bar">
+    <a class="brand" href="#top">
+      <svg class="brand-mark" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="17" cy="17" r="16" stroke="#14181c" stroke-width="1.2"/>
+        <path d="M9 21c2.5-6 4.5-9 8-9s5.5 3 8 9" stroke="#1b5c8a" stroke-width="1.4" stroke-linecap="round"/>
+        <circle cx="9" cy="21" r="1.6" fill="#3f8f66"/>
+        <circle cx="25" cy="21" r="1.6" fill="#3f8f66"/>
+        <circle cx="17" cy="12" r="1.6" fill="#14181c"/>
+      </svg>
+      <span>
+        <span class="brand-name" style="display:block;">SynthoCore</span>
+        <span class="brand-sub">BioLabs — peptide synthesis</span>
+      </span>
+    </a>
+    <nav class="site-nav">
+      <a href="#catalogue">Catalogue</a>
+      <a href="#quality">Quality &amp; CoA</a>
+      <a href="#process">Process</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <a class="btn ghost" href="#contact" style="padding:9px 16px; font-size:13.5px;">Request quote</a>
+  </div>
+</header>
+
+<main id="top">
+
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <div class="hero-eyebrow"><span class="dot"></span> Batch-tested · &ge;98% HPLC purity</div>
+        <h1 class="hero-title">Synthetic peptides, specified to the batch.</h1>
+        <p class="hero-lede">SynthoCore BioLabs supplies lyophilized research peptides with a Certificate of Analysis on every vial — sequence, purity, and mass spec on request, not on faith.</p>
+        <div class="hero-actions">
+          <a class="btn" href="#catalogue">Browse catalogue</a>
+          <a class="btn ghost" href="#quality">See a sample CoA</a>
+        </div>
+        <div class="hero-stats">
+          <div><span class="num">&ge;98%</span><span class="lbl">min. HPLC purity</span></div>
+          <div><span class="num">40+</span><span class="lbl">sequences in stock</span></div>
+          <div><span class="num">72h</span><span class="lbl">typical dispatch</span></div>
+        </div>
+      </div>
+      <svg class="hero-art" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <circle cx="200" cy="200" r="150" stroke="#d7dde1" stroke-width="1"/>
+        <circle cx="200" cy="200" r="110" stroke="#d7dde1" stroke-width="1"/>
+        <path d="M80 220c30-70 55-100 90-100s55 30 85 100 55 100 90 100" stroke="#1b5c8a" stroke-width="1.6" stroke-linecap="round"/>
+        <g fill="#14181c">
+          <circle cx="80" cy="220" r="4"/>
+          <circle cx="170" cy="120" r="4"/>
+          <circle cx="255" cy="220" r="4"/>
+          <circle cx="345" cy="320" r="4"/>
+        </g>
+        <g fill="#3f8f66">
+          <circle cx="125" cy="165" r="3"/>
+          <circle cx="210" cy="165" r="3"/>
+          <circle cx="300" cy="270" r="3"/>
+        </g>
+        <text x="60" y="365" font-family="IBM Plex Mono, monospace" font-size="11" fill="#4a545c">C&#8348;H&#8342;N&#8342;O&#8344;S &#183; MW variable by sequence</text>
+      </svg>
+    </div>
+  </section>
+
+  <section id="catalogue">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 class="section-title">Catalogue</h2>
+        <div class="section-note">Batch sizes and custom sequences available on request.</div>
+      </div>
+
+      <div class="cat-controls">
+        <button class="chip" data-filter="all" aria-pressed="true">All</button>
+        <button class="chip" data-filter="repair">Tissue &amp; repair</button>
+        <button class="chip" data-filter="metabolic">Metabolic</button>
+        <button class="chip" data-filter="growth">Growth axis</button>
+        <button class="chip" data-filter="cosmetic">Cosmetic / dermal</button>
+        <div class="search-box">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input id="catSearch" type="text" placeholder="Search sequence or CAS…" aria-label="Search catalogue">
+        </div>
+      </div>
+
+      <p class="order-banner">Submit a research enquiry via the contact form.</p>
+
+      <div class="cat-list">
+        <div class="cat-row head">
+          <span>Compound</span>
+          <span>CAS / MW</span>
+          <span>Purity</span>
+          <span>Vial size</span>
+        </div>
+        <div id="catBody"></div>
+        <p class="empty-state" id="catEmpty">No compounds match that search.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="quality">
+    <div class="wrap quality">
+      <div>
+        <h2 class="section-title" style="margin-bottom:22px;">Every vial ships with paperwork, not promises.</h2>
+        <ul>
+          <li><strong>Third-party HPLC.</strong> Independent lab verifies purity on every production batch, not just the first.</li>
+          <li><strong>Mass spec on file.</strong> MS confirmation available per lot number on request.</li>
+          <li><strong>Cold-chain packing.</strong> Lyophilized peptides ship with gel packs and insulation for stability in transit.</li>
+          <li><strong>Lot traceability.</strong> Every vial is laser-etched with a lot code that maps to its own CoA.</li>
+        </ul>
+      </div>
+      <div class="quality-panel">
+        <div class="row"><span>Document</span><b>Certificate of Analysis</b></div>
+        <div class="row"><span>Lot</span><b id="coaLot">SC-2411-BPC-07</b></div>
+        <div class="row"><span>Sequence</span><b>Gly-Glu-Pro-Pro-Pro-Gly-Lys-Pro-Ala-Asp-Asp-Ala-Gly-Leu-Val</b></div>
+        <div class="row"><span>Purity (HPLC)</span><b>99.1%</b></div>
+        <div class="row"><span>MW (theoretical)</span><b>1419.53 g/mol</b></div>
+        <div class="row"><span>Appearance</span><b>White lyophilized powder</b></div>
+        <div class="row"><span>Endotoxin</span><b>&lt;1.0 EU/mg</b></div>
+        <div class="row"><span>Storage</span><b>-20&deg;C, desiccated</b></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="process">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 class="section-title">From order to vial</h2>
+      </div>
+      <div class="process">
+        <div class="proc-step">
+          <span class="idx">01</span>
+          <h4>Request &amp; spec</h4>
+          <p>Tell us sequence, quantity, and purity target. We confirm lead time and price within one business day.</p>
+        </div>
+        <div class="proc-step">
+          <span class="idx">02</span>
+          <h4>Synthesis</h4>
+          <p>Solid-phase synthesis, cleaved and purified in-house, then submitted for independent HPLC/MS verification.</p>
+        </div>
+        <div class="proc-step">
+          <span class="idx">03</span>
+          <h4>QC &amp; lyophilization</h4>
+          <p>Passing batches are lyophilized and lot-coded. Failing batches are discarded, not discounted.</p>
+        </div>
+        <div class="proc-step">
+          <span class="idx">04</span>
+          <h4>Cold-chain dispatch</h4>
+          <p>Vials ship insulated with tracked courier. CoA is emailed ahead of the package.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact">
+    <div class="wrap contact-grid">
+      <div class="contact-info">
+        <h3>Request a quote</h3>
+        <p>For bulk pricing, custom sequences, or institutional accounts, reach out directly and we'll follow up with a formal quote and CoA samples.</p>
+        <div class="contact-detail">synthocorebiolabs@gmail.com</div>
+        <div class="contact-detail">+1 (000) 000-0000</div>
+        <div class="contact-detail">Mon–Fri, 9:00–17:00</div>
+      </div>
+      <form class="inquiry" id="inquiryForm" action="https://formsubmit.co/synthocorebiolabs@gmail.com" method="POST">
+        <!-- FormSubmit config: sends to the address above via a plain POST, no backend needed -->
+        <input type="hidden" name="_subject" value="New catalogue inquiry — SynthoCore BioLabs">
+        <input type="hidden" name="_template" value="table">
+        <input type="hidden" name="_captcha" value="false">
+        <!-- Honeypot: bots tend to fill this in; humans never see it -->
+        <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off">
+        <div class="field-row">
+          <div class="field">
+            <label for="name">Name</label>
+            <input id="name" name="Name" type="text" required>
+          </div>
+          <div class="field">
+            <label for="org">Organization</label>
+            <input id="org" name="Organization" type="text">
+          </div>
+        </div>
+        <div class="field">
+          <label for="email">Email</label>
+          <input id="email" name="Email" type="email" required>
+        </div>
+        <div class="field">
+          <label for="compound">Compound of interest</label>
+          <input id="compound" name="Compound" type="text" placeholder="e.g. BPC-157, 5mg">
+        </div>
+        <div class="field">
+          <label for="msg">Details</label>
+          <textarea id="msg" name="Details" placeholder="Quantity, purity requirements, shipping destination…"></textarea>
+        </div>
+        <button type="submit" class="btn" style="align-self:flex-start;">Send request</button>
+      </form>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site">
+  <div class="wrap foot-grid">
+    <div class="foot-legal">
+      SynthoCore BioLabs sells research chemicals for laboratory and in-vitro research purposes only. Products are not drugs, foods, or cosmetics and are not intended for human or animal consumption, diagnosis, treatment, or cure of any condition. Not for resale as a consumer product.
+    </div>
+    <div class="foot-links">
+      <a href="#catalogue">Catalogue</a>
+      <a href="#quality">Quality</a>
+      <a href="#contact">Contact</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  // ---- Product source ---------------------------------------------------
+  // Edit this list directly to add, remove, or update products and
+  // categories. Each product needs: name, alt, cas, mw, purity, size,
+  // and cat (repair / metabolic / growth / cosmetic).
+  var products = [
+    {name:"BPC-157", alt:"Pentadecapeptide BPC 157", cas:"137525-51-0", mw:"1419.53", purity:"99.1%", size:"5 mg", cat:"repair"},
+    {name:"TB-500", alt:"Thymosin Beta-4 fragment", cas:"885340-08-9", mw:"889.00", purity:"98.7%", size:"5 mg", cat:"repair"},
+    {name:"GHK-Cu", alt:"Copper tripeptide-1", cas:"49557-75-7", mw:"403.93", purity:"99.4%", size:"50 mg", cat:"cosmetic"},
+    {name:"CJC-1295", alt:"No DAC, Mod GRF 1-29", cas:"863288-34-0", mw:"3367.95", purity:"98.9%", size:"2 mg", cat:"growth"},
+    {name:"Ipamorelin", alt:"GHRP, pentapeptide", cas:"170851-70-4", mw:"711.85", purity:"99.0%", size:"5 mg", cat:"growth"},
+    {name:"Semaglutide", alt:"GLP-1 receptor agonist", cas:"910463-68-2", mw:"4113.58", purity:"98.5%", size:"5 mg", cat:"metabolic"},
+    {name:"Tirzepatide", alt:"GIP/GLP-1 dual agonist", cas:"2023788-19-2", mw:"4813.53", purity:"98.6%", size:"10 mg", cat:"metabolic"},
+    {name:"Tesamorelin", alt:"GRF analog", cas:"218949-48-5", mw:"5135.90", purity:"98.8%", size:"5 mg", cat:"growth"},
+    {name:"Melanotan II", alt:"Alpha-MSH analog", cas:"121062-08-6", mw:"1024.18", purity:"99.0%", size:"10 mg", cat:"cosmetic"},
+    {name:"PT-141", alt:"Bremelanotide", cas:"189691-06-3", mw:"1025.19", purity:"98.9%", size:"10 mg", cat:"cosmetic"},
+    {name:"Selank", alt:"Heptapeptide, TP-7", cas:"129954-34-3", mw:"751.90", purity:"99.2%", size:"5 mg", cat:"repair"},
+    {name:"Epithalon", alt:"AEDG tetrapeptide", cas:"307297-39-8", mw:"390.35", purity:"99.3%", size:"10 mg", cat:"repair"}
+  ];
+
+  var catBody = document.getElementById('catBody');
+  var emptyState = document.getElementById('catEmpty');
+  var chips = document.querySelectorAll('.chip');
+  var searchInput = document.getElementById('catSearch');
+  var activeFilter = 'all';
+
+  function render(){
+    var q = (searchInput.value || '').trim().toLowerCase();
+    var rows = products.filter(function(p){
+      var matchesFilter = activeFilter === 'all' || p.cat === activeFilter;
+      var matchesSearch = !q || p.name.toLowerCase().indexOf(q) > -1 || p.cas.toLowerCase().indexOf(q) > -1 || p.alt.toLowerCase().indexOf(q) > -1;
+      return matchesFilter && matchesSearch;
+    });
+
+    catBody.innerHTML = rows.map(function(p){
+      return '' +
+        '<div class="cat-row">' +
+          '<div class="prod-name-cell"><span class="prod-name">' + p.name + '</span><span class="prod-alt">' + p.alt + '</span></div>' +
+          '<span class="mono mw">' + p.cas + ' &middot; ' + p.mw + '</span>' +
+          '<span class="purity">' + p.purity + '</span>' +
+          '<span class="mono">' + p.size + '</span>' +
+          '<button class="row-action" data-name="' + p.name + '">Request</button>' +
+        '</div>';
+    }).join('');
+
+    emptyState.style.display = rows.length ? 'none' : 'block';
+  }
+
+  chips.forEach(function(chip){
+    chip.addEventListener('click', function(){
+      chips.forEach(function(c){ c.setAttribute('aria-pressed','false'); });
+      chip.setAttribute('aria-pressed','true');
+      activeFilter = chip.getAttribute('data-filter');
+      render();
+    });
+  });
+
+  searchInput.addEventListener('input', render);
+
+  catBody.addEventListener('click', function(e){
+    var btn = e.target.closest('.row-action');
+    if(!btn) return;
+    var compoundField = document.getElementById('compound');
+    compoundField.value = btn.getAttribute('data-name');
+    document.getElementById('contact').scrollIntoView({behavior:'smooth', block:'start'});
+    document.getElementById('name').focus();
+  });
+
+  var form = document.getElementById('inquiryForm');
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    var name = document.getElementById('name').value || 'there';
+    var submitBtn = form.querySelector('button[type="submit"]');
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Sending…';
+
+    fetch('https://formsubmit.co/ajax/synthocorebiolabs@gmail.com', {
+      method: 'POST',
+      headers: { 'Accept': 'application/json' },
+      body: new FormData(form)
+    })
+    .then(function(res){ return res.json().then(function(data){ return {ok: res.ok, data: data}; }); })
+    .then(function(result){
+      if(!result.ok) throw new Error('FormSubmit error');
+      form.innerHTML = '<p style="font-family: var(--mono); font-size:13.5px; color: var(--mint);">Thanks, ' + name.split(' ')[0] + ' — your request has been sent. We\'ll follow up by email shortly.</p>';
+    })
+    .catch(function(err){
+      console.error('Form send failed', err);
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Send request';
+      var errNote = form.querySelector('.form-error');
+      if(!errNote){
+        errNote = document.createElement('p');
+        errNote.className = 'form-error';
+        errNote.style.cssText = 'font-family:var(--mono); font-size:12.5px; color:#b3453f;';
+        form.appendChild(errNote);
+      }
+      errNote.textContent = "Something went wrong sending that — please try again, or email synthocorebiolabs@gmail.com directly.";
+    });
+  });
+
+  render();
+})();
+</script>
+
+</body>
+</html>
